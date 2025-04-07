@@ -239,6 +239,7 @@ protected:
     // Mandatory helper functions
     Node<Key, Value>* internalFind(const Key& k) const; // TODO
     Node<Key, Value> *getSmallestNode() const;  // TODO
+    static Node<Key, Value>* getRightmostNode(Node<Key, Value>* node);
     static Node<Key, Value>* predecessor(Node<Key, Value>* current); // TODO
     // Note:  static means these functions don't have a "this" pointer
     //        and instead just use the input argument.
@@ -251,7 +252,6 @@ protected:
     void clearHelper(Node<Key, Value>* node);
     int height(Node<Key, Value>* node) const;
     bool isBalanced(Node<Key, Value>* node) const;
-    Node<Key, Value>* getRightmostNode(Node<Key, Value>* node);
 
 protected:
     Node<Key, Value>* root_;
@@ -562,7 +562,7 @@ BinarySearchTree<Key, Value>::predecessor(Node<Key, Value>* current)
 
     // Case 1: Left child exists
     if (current->getLeft() != nullptr) {
-        return getRightmostNode(current->getLeft());
+        return BinarySearchTree<Key, Value>::getRightmostNode(current->getLeft());
     }
 
     // Case 2: No left child
@@ -576,7 +576,7 @@ BinarySearchTree<Key, Value>::predecessor(Node<Key, Value>* current)
 
 // Helper to find rightmost node in a subtree
 template<class Key, class Value>
-Node<Key, Value>* getRightmostNode(Node<Key, Value>* node) {
+Node<Key, Value>* BinarySearchTree<Key, Value>::getRightmostNode(Node<Key, Value>* node) {
     if (node == nullptr) return nullptr;
     while (node->getRight() != nullptr) {
         node = node->getRight();
@@ -620,7 +620,7 @@ BinarySearchTree<Key, Value>::getSmallestNode() const
         return nullptr;
     }
     Node<Key, Value>* current = root_;
-    while(current != nullptr){
+    while(current->getLeft() != nullptr){
         current = current->getLeft();
     }
     return current;
